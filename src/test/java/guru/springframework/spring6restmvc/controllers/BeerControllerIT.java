@@ -1,9 +1,11 @@
 package guru.springframework.spring6restmvc.controllers;
 
 import guru.springframework.spring6restmvc.entities.*;
+import guru.springframework.spring6restmvc.mappers.*;
 import guru.springframework.spring6restmvc.model.*;
 import guru.springframework.spring6restmvc.repositories.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.fail;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,6 +27,9 @@ class BeerControllerIT {
     @Autowired
     BeerRepository beerRepository;
 
+    @Autowired
+    BeerMapper beerMapper;
+
     @Test
     void listBeers(){
         List<BeerDTO> beerList = beerController.listBeers();
@@ -39,8 +44,14 @@ class BeerControllerIT {
         BeerDTO dto = beerController.getBeerById(beer.getId());
         assertThat(dto).isNotNull();
     }
+    @Test
+    void getById_NotFound(){
+        assertThrows(NotFoundException.class, () -> beerController.getBeerById(UUID.randomUUID()));
+    }
 
     @Test
+    @Transactional
+    @Rollback
     void saveNewBeer(){
         BeerDTO beerDTO = BeerDTO.builder()
                 .beerName("New beer")
@@ -56,11 +67,25 @@ class BeerControllerIT {
         assertThat(beer).isNotNull();
     }
 
-
     @Test
-    void getById_NotFound(){
-        assertThrows(NotFoundException.class, () -> beerController.getBeerById(UUID.randomUUID()));
+    @Transactional
+    @Rollback
+    void updateExistingBeer(){
+        Beer beer = beerRepository.findAll().get(0);
+        BeerDTO beerDTO = beerMapper.beerToBeerDto(beer);
+        beerDTO.setId(null);
+        beerDTO.setVersion(null);
+        final String newBeerName = "UPDATED";
+        beerDTO.setBeerName(newBeerName);
+
+        ResponseEntity responseEntity = beerController.updateById(beer.getId(), beerDTO);
+        assertThat(responseEntity.getStatusCode().value()).isEqualTo(204);
+
+        Beer updatedBeer = beerRepository.findById( beer.getId()).get();
+        assertThat(updatedBeer.getBeerName()).isEqualTo(newBeerName);
     }
+
+
 
     @Test
     @Transactional
