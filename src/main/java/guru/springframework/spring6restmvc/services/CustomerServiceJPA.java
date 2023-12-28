@@ -8,6 +8,7 @@ import org.springframework.context.annotation.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
+import java.util.stream.*;
 
 @Service
 @Primary
@@ -17,12 +18,16 @@ public class CustomerServiceJPA implements CustomerService {
     CustomerMapper customerMapper;
     @Override
     public Optional<CustomerDTO> getCustomerById(UUID id) {
-        return Optional.empty();
+
+        return Optional.ofNullable(customerMapper.customerToCustomerDTO(customerRepository.findById(id)
+                .orElse(null)));
     }
 
     @Override
     public List<CustomerDTO> listAllCustomers() {
-        return null;
+        return customerRepository.findAll().stream()
+                .map(customerMapper::customerToCustomerDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
