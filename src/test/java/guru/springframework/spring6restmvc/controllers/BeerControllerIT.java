@@ -1,10 +1,13 @@
 package guru.springframework.spring6restmvc.controllers;
 
+import guru.springframework.spring6restmvc.entities.*;
 import guru.springframework.spring6restmvc.model.*;
 import guru.springframework.spring6restmvc.repositories.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
@@ -25,6 +28,21 @@ class BeerControllerIT {
     void listBeers(){
         List<BeerDTO> beerList = beerController.listBeers();
         assertEquals(3, beerList.size());
+    }
+
+    @Test
+    void getById(){
+        List<Beer> beerList = beerRepository.findAll();
+        Beer beer= beerList.get(0);
+
+        BeerDTO dto = beerController.getBeerById(beer.getId());
+        assertThat(dto).isNotNull();
+    }
+
+
+    @Test
+    void getById_NotFound(){
+        assertThrows(NotFoundException.class, () -> beerController.getBeerById(UUID.randomUUID()));
     }
 
     @Test
