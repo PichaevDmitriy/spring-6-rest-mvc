@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.context.*;
+import org.springframework.http.*;
 import org.springframework.test.annotation.*;
 import org.springframework.transaction.annotation.*;
 
@@ -37,6 +38,22 @@ class BeerControllerIT {
 
         BeerDTO dto = beerController.getBeerById(beer.getId());
         assertThat(dto).isNotNull();
+    }
+
+    @Test
+    void saveNewBeer(){
+        BeerDTO beerDTO = BeerDTO.builder()
+                .beerName("New beer")
+                .build();
+        ResponseEntity responseEntity = beerController.handlePost(beerDTO);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(201));
+        assertThat(responseEntity.getHeaders().getLocation()).isNotNull();
+
+        String[] locationUUID = responseEntity.getHeaders().getLocation().getPath().split("/");
+        UUID savedUUID = UUID.fromString(locationUUID[4]);
+
+        Beer beer = beerRepository.findById(savedUUID).get();
+        assertThat(beer).isNotNull();
     }
 
 
