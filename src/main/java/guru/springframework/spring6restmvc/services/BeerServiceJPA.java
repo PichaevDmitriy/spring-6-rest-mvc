@@ -9,6 +9,7 @@ import org.springframework.context.annotation.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.*;
 import java.util.stream.*;
 
 @Service
@@ -37,14 +38,21 @@ public class BeerServiceJPA implements BeerService {
     }
 
     @Override
-    public void updateBeerById(UUID beerId, BeerDTO beer) {
-        repository.findById(beerId).ifPresent(foundBeer -> {
+    public Optional<BeerDTO> updateBeerById(UUID beerId, BeerDTO beer) {
+        AtomicReference<Optional<BeerDTO>> atomicReference = new AtomicReference<>();
+
+        repository.findById(beerId).ifPresentOrElse(foundBeer -> {
             foundBeer.setBeerName(beer.getBeerName());
             foundBeer.setBeerStyle(beer.getBeerStyle());
             foundBeer.setPrice(beer.getPrice());
             foundBeer.setUpc(beer.getUpc());
             repository.save(foundBeer);
+            atomicReference.set(Optional.of(beerMapper.beerToBeerDto(repository.save(foundBeer))));
+        }, () -> {
+            atomicReference.set(Optional.empty());
         });
+
+        return atomicReference.get();
     }
 
     @Override
