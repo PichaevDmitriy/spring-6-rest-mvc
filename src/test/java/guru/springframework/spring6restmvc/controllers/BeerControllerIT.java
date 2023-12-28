@@ -92,8 +92,6 @@ class BeerControllerIT {
         });
     }
 
-
-
     @Test
     @Transactional
     @Rollback
@@ -102,6 +100,16 @@ class BeerControllerIT {
         List<BeerDTO> beerList = beerController.listBeers();
         assertNotNull(beerList);
         assertTrue(beerList.isEmpty());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void deleteById(){
+        Beer beer = beerRepository.findAll().get(0);
+        ResponseEntity responseEntity = beerController.deleteById(beer.getId());
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+        assertThrows(NotFoundException.class, () -> beerController.getBeerById(beer.getId()));
     }
 
 }
