@@ -112,4 +112,11 @@ class BeerControllerIT {
         assertThrows(NotFoundException.class, () -> beerController.getBeerById(beer.getId()));
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    void deleteByIdNotFound(){
+        assertThrows(NotFoundException.class, () -> beerController.deleteById(UUID.randomUUID()));
+    }
+
 }
