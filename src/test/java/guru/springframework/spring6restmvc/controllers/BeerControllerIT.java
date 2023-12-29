@@ -103,7 +103,7 @@ class BeerControllerIT {
         final String newBeerName = "UPDATED";
         beerDTO.setBeerName(newBeerName);
 
-        ResponseEntity responseEntity = beerController.updateBeerPatchById(beer.getId(), beerDTO);
+        ResponseEntity responseEntity = beerController.patchBeerById(beer.getId(), beerDTO);
         assertThat(responseEntity.getStatusCode().value()).isEqualTo(204);
 
         Beer updatedBeer = beerRepository.findById( beer.getId()).get();
