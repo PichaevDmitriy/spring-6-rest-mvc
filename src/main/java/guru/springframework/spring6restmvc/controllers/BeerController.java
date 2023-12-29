@@ -17,18 +17,15 @@ public class BeerController {
     public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
     private final BeerService beerService;
 
-    @PatchMapping(value = BEER_PATH_ID)
-    public ResponseEntity updateBeerPatchById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
-        beerService.patchById(beerId, beer);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    @GetMapping(value = BEER_PATH )
+    public List<BeerDTO> listBeers() {
+        return beerService.listBeers();
     }
 
-    @PutMapping(value = BEER_PATH_ID)
-    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
-       if (beerService.updateBeerById(beerId, beer).isEmpty()){
-           throw new NotFoundException();
-       };
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    @GetMapping(value = BEER_PATH_ID)
+    public BeerDTO getBeerById(@PathVariable("beerId") UUID beerId) {
+        log.debug("Get beer by id - in controller");
+        return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
     }
 
     @PostMapping(value = BEER_PATH)
@@ -41,6 +38,24 @@ public class BeerController {
         return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
     }
 
+    @PutMapping(value = BEER_PATH_ID)
+    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
+       if (beerService.updateBeerById(beerId, beer).isEmpty()){
+           throw new NotFoundException();
+       };
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping(value = BEER_PATH_ID)
+    public ResponseEntity patchBeerById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
+        if (beerService.patchById(beerId, beer).isEmpty()){
+            throw new NotFoundException();
+        };
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+
+
     @DeleteMapping(value = BEER_PATH_ID)
     public ResponseEntity deleteById(@PathVariable("beerId") UUID beerId) {
         if (!beerService.deleteById(beerId)) {
@@ -48,17 +63,4 @@ public class BeerController {
         };
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
-
-    @GetMapping(value = BEER_PATH )
-    public List<BeerDTO> listBeers() {
-        return beerService.listBeers();
-    }
-
-    @GetMapping(value = BEER_PATH_ID)
-    public BeerDTO getBeerById(@PathVariable("beerId") UUID beerId) {
-        log.debug("Get beer by id - in controller");
-        return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
-    }
-
-
 }
