@@ -46,6 +46,7 @@ class CustomerControllerTest {
     @Test
     void updateCustomer() throws Exception {
         CustomerDTO testCustomer = customerServiceImpl.listAllCustomers().get(0);
+        given(customerService.updateCustomerById(any(),any())).willReturn(Optional.of(testCustomer));
         mockMvc.perform(put(CustomerController.CUSTOMER_PATH_ID, testCustomer.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -59,6 +60,7 @@ class CustomerControllerTest {
     @Test
     void patchCustomer() throws Exception {
         CustomerDTO testCustomer = customerServiceImpl.listAllCustomers().get(0);
+        given(customerService.patchCustomerById(any(),any())).willReturn(Optional.of(testCustomer));
 
         Map<String, Object> customerMap = new HashMap<>();
         customerMap.put("customerName", "New Name");
@@ -76,6 +78,7 @@ class CustomerControllerTest {
     @Test
     void deleteCustomer() throws Exception {
         CustomerDTO testCustomer = customerServiceImpl.listAllCustomers().get(0);
+        given(customerService.deleteCustomerById(any())).willReturn(true);
         mockMvc.perform(delete(CustomerController.CUSTOMER_PATH_ID, testCustomer.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
