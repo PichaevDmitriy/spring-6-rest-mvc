@@ -5,6 +5,7 @@ import guru.springframework.spring6restmvc.services.*;
 import lombok.*;
 import lombok.extern.slf4j.*;
 import org.springframework.http.*;
+import org.springframework.validation.annotation.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -29,7 +30,7 @@ public class BeerController {
     }
 
     @PostMapping(value = BEER_PATH)
-    public ResponseEntity handlePost(@RequestBody BeerDTO beer) {
+    public ResponseEntity saveNewBeer(@RequestBody @Validated BeerDTO beer) {
         BeerDTO savedBeer = beerService.saveNewBeer(beer);
 
         HttpHeaders httpHeaders = new HttpHeaders();
