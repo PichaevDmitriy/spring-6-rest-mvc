@@ -116,12 +116,14 @@ class BeerControllerTest {
 
         given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers().get(1));
 
-        mockMvc.perform(post(BeerController.BEER_PATH)
+        MvcResult result = mockMvc.perform(post(BeerController.BEER_PATH)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content))
                 .andExpect(status().isBadRequest())
+                .andReturn()
         ;
+        System.out.println(result.getResponse().getContentAsString());
     }
 
     @Test
