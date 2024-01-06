@@ -1,13 +1,22 @@
 package guru.springframework.spring6restmvc.controllers;
 
-import org.springframework.http.*;
-import org.springframework.web.bind.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.*;
 
 @ControllerAdvice
 public class CustomErrorController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity handleError(MethodArgumentNotValidException exception){
-        return ResponseEntity.badRequest().body(exception.getBindingResult().getFieldError());
+        List errorList = exception.getFieldErrors().stream()
+                .map(fieldError -> {
+                    Map<String, String> errorMap = new HashMap<>();
+                    errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
+                    return errorMap;
+                }).toList();
+        return ResponseEntity.badRequest().body(errorList);
     }
 }

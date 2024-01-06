@@ -1,18 +1,20 @@
 package guru.springframework.spring6restmvc.model;
 
-import jakarta.validation.constraints.*;
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Data;
 
-import java.math.*;
-import java.time.*;
-import java.util.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
-@Data
 @Builder
+@Data
 public class BeerDTO {
     private UUID id;
     private Integer version;
-    @NonNull
+    @NotNull
     @NotBlank
     private String beerName;
     private BeerStyle beerStyle;
