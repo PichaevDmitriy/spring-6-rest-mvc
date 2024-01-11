@@ -2,6 +2,7 @@ package guru.springframework.spring6restmvc.controllers;
 
 import guru.springframework.spring6restmvc.model.*;
 import guru.springframework.spring6restmvc.services.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.extern.slf4j.*;
 import org.springframework.http.*;
@@ -40,7 +41,7 @@ public class BeerController {
     }
 
     @PutMapping(value = BEER_PATH_ID)
-    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
+    public ResponseEntity updateById(@NotNull @PathVariable("beerId") UUID beerId, @Validated @RequestBody BeerDTO beer) {
        if (beerService.updateBeerById(beerId, beer).isEmpty()){
            throw new NotFoundException();
        };
