@@ -7,6 +7,7 @@ import guru.springframework.spring6restmvc.model.*;
 import guru.springframework.spring6restmvc.repositories.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.fail;
+import static org.hamcrest.core.Is.is;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,6 +23,8 @@ import org.springframework.http.*;
 import org.springframework.test.annotation.*;
 import org.springframework.test.web.servlet.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.test.web.servlet.setup.*;
 import org.springframework.transaction.annotation.*;
@@ -151,7 +154,10 @@ class BeerControllerIT {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsBytes(beerMap))
             .accept(MediaType.APPLICATION_JSON))
-          .andExpect(status().isBadRequest());
+          .andExpect(status().isBadRequest())
+          .andExpect(jsonPath("$.length()", is(1)))
+          .andDo(print())
+          .andReturn();
     }
 
     @Test
