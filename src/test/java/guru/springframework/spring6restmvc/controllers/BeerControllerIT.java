@@ -1,5 +1,6 @@
 package guru.springframework.spring6restmvc.controllers;
 
+import com.fasterxml.jackson.databind.*;
 import guru.springframework.spring6restmvc.entities.*;
 import guru.springframework.spring6restmvc.mappers.*;
 import guru.springframework.spring6restmvc.model.*;
@@ -11,11 +12,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.boot.*;
 import org.springframework.boot.test.context.*;
 import org.springframework.http.*;
 import org.springframework.test.annotation.*;
+import org.springframework.test.web.servlet.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.test.web.servlet.setup.*;
 import org.springframework.transaction.annotation.*;
+import org.springframework.web.context.*;
 
 import java.util.*;
 
@@ -29,6 +39,19 @@ class BeerControllerIT {
 
     @Autowired
     BeerMapper beerMapper;
+
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @Autowired
+    WebApplicationContext wac;
+
+    MockMvc mockMvc;
+
+    @BeforeEach
+    void setUp(){
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+    }
 
     @Test
     void listBeers(){
@@ -115,6 +138,20 @@ class BeerControllerIT {
         assertThrows(NotFoundException.class, () -> {
             beerController.updateById(UUID.randomUUID(), BeerDTO.builder().build());
         });
+    }
+
+    @Test
+    void patchBeerBadBeerName() throws Exception {
+        Beer beer = beerRepository.findAll().get(0);
+
+        Map<String, Object> beerMap = new HashMap<>();
+        beerMap.put("beerName", "New Namedfsfsdfsdfsdfsdfsdfffdfdfsddfsdfsdfsdfsdfsdfsdf");
+
+        mockMvc.perform(patch(BeerController.BEER_PATH_ID, beer.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(beerMap))
+            .accept(MediaType.APPLICATION_JSON))
+          .andExpect(status().isBadRequest());
     }
 
     @Test
