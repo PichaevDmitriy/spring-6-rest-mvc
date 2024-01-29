@@ -48,13 +48,13 @@ public class CustomerControllerIT {
         Customer existingCustomer = customerRepository.findAll().get(0);
         final String newCustomerName = "New name";
         CustomerDTO dto = CustomerDTO.builder()
-                .customerName(newCustomerName)
+                .name(newCustomerName)
                 .build();
         ResponseEntity responseEntity = customerController.updateCustomerById(existingCustomer.getId(), dto);
         assertThat(responseEntity.getStatusCode().value()).isEqualTo(204);
 
         Customer updatedCustomer = customerRepository.findById( existingCustomer.getId()).get();
-        assertThat(updatedCustomer.getCustomerName()).isEqualTo(newCustomerName);
+        assertThat(updatedCustomer.getName()).isEqualTo(newCustomerName);
     }
 
     @Test
@@ -71,13 +71,13 @@ public class CustomerControllerIT {
         Customer existingCustomer = customerRepository.findAll().get(0);
         final String newCustomerName = "New name";
         CustomerDTO dto = CustomerDTO.builder()
-                .customerName(newCustomerName)
+                .name(newCustomerName)
                 .build();
         ResponseEntity responseEntity = customerController.patchCustomerById(existingCustomer.getId(), dto);
         assertThat(responseEntity.getStatusCode().value()).isEqualTo(204);
 
         Customer updatedCustomer = customerRepository.findById( existingCustomer.getId()).get();
-        assertThat(updatedCustomer.getCustomerName()).isEqualTo(newCustomerName);
+        assertThat(updatedCustomer.getName()).isEqualTo(newCustomerName);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class CustomerControllerIT {
     void saveNewCustomer(){
         final String newCustomerName = "New name";
         CustomerDTO dto = CustomerDTO.builder()
-                .customerName(newCustomerName)
+                .name(newCustomerName)
                 .build();
 
         ResponseEntity responseEntity = customerController.handlePost(dto);

@@ -8,7 +8,6 @@ import org.hibernate.annotations.*;
 import org.hibernate.type.*;
 
 import java.math.*;
-import java.sql.*;
 import java.time.*;
 import java.util.*;
 
@@ -42,6 +41,7 @@ public class Beer {
     private Integer quantityOnHand;
     @NotNull
     private BigDecimal price;
+
     private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
+    private LocalDateTime updateDate;
 }

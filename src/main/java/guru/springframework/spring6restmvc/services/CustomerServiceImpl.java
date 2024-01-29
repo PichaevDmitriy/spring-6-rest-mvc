@@ -19,7 +19,7 @@ public class CustomerServiceImpl implements CustomerService {
         CustomerDTO customer1 = CustomerDTO.builder()
                 .id(UUID.randomUUID())
                 .version(1)
-                .customerName("Test Testov")
+                .name("Test Testov")
                 .createdDate(LocalDateTime.now())
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
@@ -27,7 +27,7 @@ public class CustomerServiceImpl implements CustomerService {
         CustomerDTO customer2 = CustomerDTO.builder()
                 .id(UUID.randomUUID())
                 .version(1)
-                .customerName("Vasya Pupkin")
+                .name("Vasya Pupkin")
                 .createdDate(LocalDateTime.now())
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
@@ -53,7 +53,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .version(1)
                 .createdDate(LocalDateTime.now())
                 .lastModifiedDate(LocalDateTime.now())
-                .customerName(customer.getCustomerName())
+                .name(customer.getName())
                 .version(customer.getVersion())
                 .build();
         customerMap.put(savedCustomer.getId(), savedCustomer);
@@ -63,7 +63,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer) {
         CustomerDTO existing = this.getCustomerById(customerId).orElseThrow(NotFoundException::new);
-        existing.setCustomerName(customer.getCustomerName());
+        existing.setName(customer.getName());
         existing.setLastModifiedDate(LocalDateTime.now());
         return Optional.of(existing);
     }
@@ -77,8 +77,8 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Optional<CustomerDTO> patchCustomerById(UUID customerId, CustomerDTO customer) {
         CustomerDTO existing = this.getCustomerById(customerId).orElseThrow(NotFoundException::new);
-        if (StringUtils.hasText(customer.getCustomerName())){
-            existing.setCustomerName(customer.getCustomerName());
+        if (StringUtils.hasText(customer.getName())){
+            existing.setName(customer.getName());
         }
         return Optional.of(existing);
     }

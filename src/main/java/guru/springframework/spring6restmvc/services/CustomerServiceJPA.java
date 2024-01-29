@@ -43,7 +43,7 @@ public class CustomerServiceJPA implements CustomerService {
     public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer) {
         AtomicReference<Optional<CustomerDTO>> atomicReference = new AtomicReference<>();
         repository.findById(customerId).ifPresentOrElse(foundCustomer -> {
-            foundCustomer.setCustomerName(customer.getCustomerName());
+            foundCustomer.setName(customer.getName());
             repository.save(foundCustomer);
             atomicReference.set(Optional.of(customerMapper.customerToCustomerDTO(repository.save(foundCustomer))));
         }, () -> atomicReference.set(Optional.empty()));
@@ -65,8 +65,8 @@ public class CustomerServiceJPA implements CustomerService {
     public Optional<CustomerDTO> patchCustomerById(UUID customerId, CustomerDTO customer) {
         AtomicReference<Optional<CustomerDTO>> atomicReference = new AtomicReference<>();
         repository.findById(customerId).ifPresentOrElse(foundCustomer -> {
-            if (StringUtils.hasText(customer.getCustomerName())){
-                foundCustomer.setCustomerName(customer.getCustomerName());
+            if (StringUtils.hasText(customer.getName())){
+                foundCustomer.setName(customer.getName());
             }
             repository.save(foundCustomer);
             atomicReference.set(Optional.of(customerMapper.customerToCustomerDTO(repository.save(foundCustomer))));

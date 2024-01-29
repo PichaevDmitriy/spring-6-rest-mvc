@@ -72,7 +72,7 @@ class CustomerControllerTest {
         verify(customerService).patchCustomerById(uuidArgumentCaptor.capture(), customerArgumentCaptor.capture());
 
         assertThat(testCustomer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
-        assertThat(customerMap.get("customerName")).isEqualTo(customerArgumentCaptor.getValue().getCustomerName());
+        assertThat(customerMap.get("name")).isEqualTo(customerArgumentCaptor.getValue().getName());
     }
 
     @Test
@@ -123,7 +123,7 @@ class CustomerControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", Is.is(testCustomer.getId().toString())))
-                .andExpect(jsonPath("$.customerName", Is.is(testCustomer.getCustomerName())))
+                .andExpect(jsonPath("$.name", Is.is(testCustomer.getName())))
         ;
     }
 
