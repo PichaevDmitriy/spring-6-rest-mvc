@@ -21,7 +21,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .version(1)
                 .name("Test Testov")
                 .createdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
+                .updateDate(LocalDateTime.now())
                 .build();
 
         CustomerDTO customer2 = CustomerDTO.builder()
@@ -29,7 +29,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .version(1)
                 .name("Vasya Pupkin")
                 .createdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
+                .updateDate(LocalDateTime.now())
                 .build();
 
         customerMap.put(customer1.getId(), customer1);
@@ -52,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
                 .id(UUID.randomUUID())
                 .version(1)
                 .createdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
+                .updateDate(LocalDateTime.now())
                 .name(customer.getName())
                 .version(customer.getVersion())
                 .build();
@@ -64,7 +64,7 @@ public class CustomerServiceImpl implements CustomerService {
     public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer) {
         CustomerDTO existing = this.getCustomerById(customerId).orElseThrow(NotFoundException::new);
         existing.setName(customer.getName());
-        existing.setLastModifiedDate(LocalDateTime.now());
+        existing.setUpdateDate(LocalDateTime.now());
         return Optional.of(existing);
     }
 

@@ -16,5 +16,5 @@ public class CustomerDTO {
     private Integer version;
     private String name;
     private LocalDateTime createdDate;
-    private LocalDateTime lastModifiedDate;
+    private LocalDateTime updateDate;
 }
